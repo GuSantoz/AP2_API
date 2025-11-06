@@ -1,0 +1,367 @@
+swagger: "2.0"
+info:
+  title: API de Gerenciamento Escolar
+  description: API CRUD para gerenciar Alunos, Professores e Turmas.
+  version: "1.0.0"
+
+host: 127.0.0.1:5000
+basePath: /
+schemes:
+  - http
+
+tags:
+  - name: Alunos
+    description: Operações relacionadas a alunos
+  - name: Professores
+    description: Operações relacionadas a professores
+  - name: Turmas
+    description: Operações relacionadas a turmas
+
+paths:
+  /alunos:
+    get:
+      tags:
+        - Alunos
+      summary: Lista todos os alunos
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Lista de alunos retornada com sucesso
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Aluno"
+    post:
+      tags:
+        - Alunos
+      summary: Cria um novo aluno
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Dados do aluno a ser criado. O campo 'turma_id' é obrigatório.
+          required: true
+          schema:
+            $ref: "#/definitions/AlunoCriacao"
+      responses:
+        201:
+          description: Aluno criado com sucesso
+          schema:
+            $ref: "#/definitions/Aluno"
+        400:
+          description: Erro de validação (ex Campo 'turma_id' é obrigatório)
+
+  /alunos/{aluno_id}:
+    parameters:
+      - name: aluno_id
+        in: path
+        required: true
+        type: integer
+        description: ID do aluno
+    get:
+      tags:
+        - Alunos
+      summary: Obtém um aluno pelo ID
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Aluno encontrado e retornado
+          schema:
+            $ref: "#/definitions/Aluno"
+        404:
+          description: Aluno não encontrado
+    put:
+      tags:
+        - Alunos
+      summary: Atualiza um aluno existente
+      consumes:
+        - application/json
+      parameters:
+        - name: aluno_id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: body
+          description: Novos dados do aluno
+          required: true
+          schema:
+            $ref: "#/definitions/AlunoCriacao" # Usa o mesmo esquema, assumindo que PUT requer todos os campos
+      responses:
+        200:
+          description: Aluno atualizado com sucesso
+          schema:
+            $ref: "#/definitions/Aluno"
+        404:
+          description: Aluno não encontrado
+    delete:
+      tags:
+        - Alunos
+      summary: Remove um aluno
+      responses:
+        200:
+          description: Aluno removido com sucesso
+        404:
+          description: Aluno não encontrado
+
+  /professores:
+    get:
+      tags:
+        - Professores
+      summary: Lista todos os professores
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Lista de professores retornada com sucesso
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Professor"
+    post:
+      tags:
+        - Professores
+      summary: Cria um novo professor
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Dados do professor a ser criado
+          required: true
+          schema:
+            $ref: "#/definitions/ProfessorCriacao"
+      responses:
+        201:
+          description: Professor criado com sucesso
+          schema:
+            $ref: "#/definitions/Professor"
+  
+  /professores/{professor_id}:
+    parameters:
+      - name: professor_id
+        in: path
+        required: true
+        type: integer
+        description: ID do professor
+    get:
+      tags:
+        - Professores
+      summary: Obtém um professor pelo ID
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Professor encontrado e retornado
+          schema:
+            $ref: "#/definitions/Professor"
+        404:
+          description: Professor não encontrado
+    put:
+      tags:
+        - Professores
+      summary: Atualiza um professor existente
+      consumes:
+        - application/json
+      parameters:
+        - name: professor_id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: body
+          description: Novos dados do professor
+          required: true
+          schema:
+            $ref: "#/definitions/ProfessorCriacao"
+      responses:
+        200:
+          description: Professor atualizado com sucesso
+          schema:
+            $ref: "#/definitions/Professor"
+        404:
+          description: Professor não encontrado
+    delete:
+      tags:
+        - Professores
+      summary: Remove um professor
+      responses:
+        200:
+          description: Professor removido com sucesso
+        404:
+          description: Professor não encontrado
+
+  /turmas:
+    get:
+      tags:
+        - Turmas
+      summary: Lista todas as turmas
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Lista de turmas retornada com sucesso
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Turma"
+    post:
+      tags:
+        - Turmas
+      summary: Cria uma nova turma
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Dados da turma a ser criada. 'professor_id' e 'ativo' são obrigatórios.
+          required: true
+          schema:
+            $ref: "#/definitions/TurmaCriacao"
+      responses:
+        201:
+          description: Turma criada com sucesso
+          schema:
+            $ref: "#/definitions/Turma"
+        400:
+          description: Erro de validação (ex Campos 'professor_id' ou 'ativo' são obrigatórios)
+  
+  /turmas/{turma_id}:
+    parameters:
+      - name: turma_id
+        in: path
+        required: true
+        type: integer
+        description: ID da turma
+    get:
+      tags:
+        - Turmas
+      summary: Obtém uma turma pelo ID
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Turma encontrada e retornado
+          schema:
+            $ref: "#/definitions/Turma"
+        404:
+          description: Turma não encontrada
+    put:
+      tags:
+        - Turmas
+      summary: Atualiza uma turma existente
+      consumes:
+        - application/json
+      parameters:
+        - name: turma_id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: body
+          description: Novos dados da turma
+          required: true
+          schema:
+            $ref: "#/definitions/TurmaCriacao"
+      responses:
+        200:
+          description: Turma atualizada com sucesso
+          schema:
+            $ref: "#/definitions/Turma"
+        404:
+          description: Turma não encontrada
+    delete:
+      tags:
+        - Turmas
+      summary: Remove uma turma
+      responses:
+        200:
+          description: Turma removida com sucesso
+        404:
+          description: Turma não encontrada
+
+definitions:
+  Aluno:
+    type: object
+    properties:
+      id:
+        type: integer
+        readOnly: true
+      nome:
+        type: string
+      idade:
+        type: integer
+      data_nascimento:
+        type: string
+        format: date
+        description: Data de nascimento (Ex 2007-01-15)
+      nota_primeiro_semestre:
+        type: number
+        format: float
+      nota_segundo_semestre:
+        type: number
+        format: float
+      media_final:
+        type: number
+        format: float
+        readOnly: true
+      turma_id:
+        type: integer
+  
+  AlunoCriacao:
+    allOf:
+      - $ref: "#/definitions/Aluno"
+    required:
+      - nome
+      - idade
+      - data_nascimento
+      - nota_primeiro_semestre
+      - nota_segundo_semestre
+      - turma_id
+
+  Professor:
+    type: object
+    properties:
+      id:
+        type: integer
+        readOnly: true
+      nome:
+        type: string
+      idade:
+        type: integer
+      materia:
+        type: string
+      observacoes:
+        type: string
+  
+  ProfessorCriacao:
+    allOf:
+      - $ref: "#/definitions/Professor"
+    required:
+      - nome
+      - idade
+      - materia
+
+  Turma:
+    type: object
+    properties:
+      id:
+        type: integer
+        readOnly: true
+      descricao:
+        type: string
+      professor_id:
+        type: integer
+      ativo:
+        type: boolean
+  
+  TurmaCriacao:
+    allOf:
+      - $ref: "#/definitions/Turma"
+    required:
+      - descricao
+      - professor_id
+      - ativo

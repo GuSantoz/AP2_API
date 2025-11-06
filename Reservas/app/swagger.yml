@@ -1,0 +1,215 @@
+swagger: "2.0"
+info:
+  title: API de Reservas
+  description: Microserviço para gerenciamento de reservas de salas.
+  version: '1.0.0'
+
+# Define o servidor base (Sintaxe 2.0)
+host: "127.0.0.1:5001"
+basePath: "/"
+schemes:
+  - http
+
+# Define as "tags" para agrupar endpoints
+tags:
+  - name: Reservas
+    description: Operações de CRUD para Reservas
+
+# Define os caminhos (endpoints) da API
+paths:
+  /reservas:
+    get:
+      tags:
+        - Reservas
+      summary: Lista todas as reservas
+      description: Retorna uma lista de todas as reservas cadastradas, sem enriquecimento.
+      produces: # Define o tipo de resposta
+        - application/json
+      responses:
+        '200':
+          description: Lista de reservas retornada com sucesso.
+          schema: # Sintaxe 2.0 para schema de resposta
+            type: array
+            items:
+              $ref: '#/definitions/ReservaSimples'
+    
+    post:
+      tags:
+        - Reservas
+      summary: Cria uma nova reserva
+      description: Cria uma nova reserva após validar se a Turma (via turma_id) existe no microserviço de Gerenciamento.
+      consumes: # Define o tipo de input (JSON)
+        - application/json
+      parameters:
+        - in: body # Sintaxe 2.0 para o corpo da requisição
+          name: body
+          description: Dados da reserva para criar.
+          required: true
+          schema:
+            $ref: '#/definitions/ReservaInput'
+      responses:
+        '201':
+          description: Reserva criada com sucesso.
+          schema:
+            type: object
+            properties:
+              mensagem:
+                type: string
+                example: "Reserva criada com sucesso!"
+              id:
+                type: integer
+                example: 1
+        '400':
+          description: Dados de entrada inválidos (ex falta 'lab').
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Turma (turma_id) não encontrada.
+          schema:
+            $ref: '#/definitions/Error'
+
+  /reservas/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: O ID único da reserva.
+        type: integer # Sintaxe 2.0 (sem o 'schema:')
+
+    get:
+      tags:
+        - Reservas
+      summary: Busca uma reserva por ID
+      description: Retorna os detalhes de uma reserva específica, enriquecida com o nome da turma.
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Detalhes da reserva.
+          schema:
+            $ref: '#/definitions/ReservaCompleta'
+        '404':
+          description: Reserva não encontrada.
+          schema:
+            $ref: '#/definitions/Error'
+
+    put:
+      tags:
+        - Reservas
+      summary: Atualiza uma reserva existente
+      description: Atualiza os dados de uma reserva específica.
+      consumes:
+        - application/json
+      parameters:
+        - in: body # Sintaxe 2.0 para o corpo da requisição
+          name: body
+          description: Dados da reserva para atualizar.
+          required: true
+          schema:
+            $ref: '#/definitions/ReservaInput'
+      responses:
+        '200':
+          description: Reserva atualizada com sucesso.
+          schema:
+            type: object
+            properties:
+              mensagem:
+                type: string
+                example: "Reserva atualizada com sucesso"
+        '404':
+          description: Reserva não encontrada.
+          schema:
+            $ref: '#/definitions/Error'
+
+    delete:
+      tags:
+        - Reservas
+      summary: Deleta uma reserva
+      description: Remove uma reserva do banco de dados.
+      responses:
+        '200':
+          description: Reserva deletada com sucesso.
+          schema:
+            type: object
+            properties:
+              mensagem:
+                type: string
+                example: "Reserva deletada com sucesso"
+        '404':
+          description: Reserva não encontrada.
+          schema:
+            $ref: '#/definitions/Error'
+
+# Define os modelos de dados reutilizáveis (Sintaxe 2.0)
+definitions:
+  ReservaInput:
+    type: object
+    description: Dados necessários para criar ou atualizar uma reserva.
+    properties:
+      num_sala:
+        type: string
+        example: "B205"
+      lab:
+        type: boolean
+        example: true
+      data:
+        type: string
+        example: "20/10/2025"
+      turma_id:
+        type: integer
+        example: 2
+    required:
+      - num_sala
+      - lab
+      - data
+      - turma_id
+
+  ReservaSimples:
+    type: object
+    description: Representação de uma reserva (usado na listagem).
+    properties:
+      id:
+        type: integer
+        example: 1
+      num_sala:
+        type: string
+        example: "B205"
+      lab:
+        type: boolean
+        example: true
+      data:
+        type: string
+        example: "20/10/2025"
+      turma_id:
+        type: integer
+        example: 2
+
+  ReservaCompleta:
+    type: object
+    description: Representação de uma reserva (usado na busca por ID).
+    properties:
+      id:
+        type: integer
+        example: 1
+      num_sala:
+        type: string
+        example: "B205"
+      lab:
+        type: boolean
+        example: true
+      data:
+        type: string
+        example: "20/10/2025"
+      turma_id:
+        type: integer
+        example: 2
+      turma_nome:
+        type: string
+        example: "Engenharia de Software (Noite)"
+
+  Error:
+    type: object
+    properties:
+      erro:
+        type: string
+        example: "Mensagem de erro"

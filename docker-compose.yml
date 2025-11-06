@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # Serviço para o microsserviço principal
+  Gerenciamento:
+    # A instrução 'build' indica que o Docker deve construir a imagem a partir do Dockerfile
+    build: ./Gerenciamento
+    # 'ports' mapeia a porta do host para a porta do container
+    # Isso permite acessar o microsserviço principal de fora do Docker
+    ports:
+      - "5000:5000"
+    # 'volumes' permite sincronizar o código do host com o container, útil para desenvolvimento
+    volumes:
+      - ./Gerenciamento:/app
+    # Define a dependência. O principal só inicia depois do secundário estar pronto
+    #depends_on:
+    #  - microsservico_secundario
+    # O nome do container
+    container_name: poc_Gerenciamento
+
+  # Serviço para o microsserviço secundário
+  Reservas:
+    build: ./Reservas
+    # 'expose' indica que esta porta estará disponível para outros serviços na rede Docker
+    # Não usamos 'ports' aqui porque não precisamos acessar este serviço diretamente do host
+    expose:
+      - "5001"
+    volumes:
+      - ./Reservas:/app
+    container_name: poc_Reservas
+
+
+   # Serviço para o microsserviço terciário
+  Atividades:
+    build: ./Atividades
+    # 'expose' indica que esta porta estará disponível para outros serviços na rede Docker
+    # Não usamos 'ports' aqui porque não precisamos acessar este serviço diretamente do host
+    expose:
+      - "5002"
+    volumes:
+      - ./Atividades:/app
+    container_name: poc_Atividades

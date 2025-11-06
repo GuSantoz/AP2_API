@@ -1,0 +1,378 @@
+swagger: "2.0"
+info:
+  title: API de Atividades e Notas
+  description: Microserviço para gerenciamento de atividades (trabalhos) e notas de alunos.
+  version: '1.0.0'
+
+# Assumindo que este microserviço roda na porta 5002
+host: "127.0.0.1:5002"
+basePath: "/"
+schemes:
+  - http
+
+tags:
+  - name: Atividades (CRUD Principal)
+    description: Operações de criação, leitura, atualização e exclusão de Atividades.
+  - name: Notas (CRUD Aninhado)
+    description: Operações de lançamento e gerenciamento de notas em Atividades.
+
+paths:
+  # ====================================================
+  # ROTAS DE ATIVIDADES
+  # ====================================================
+  /atividades:
+    get:
+      tags:
+        - Atividades (CRUD Principal)
+      summary: Lista todas as atividades
+      description: Retorna uma lista de todas as atividades, enriquecidas com dados da Turma e Professor.
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Lista de atividades retornada com sucesso.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AtividadeSimples' # Não enriquecida para listagem
+    
+    post:
+      tags:
+        - Atividades (CRUD Principal)
+      summary: Cria uma nova atividade
+      description: Cria uma nova atividade após validar Turma e Professor (via HTTP).
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Dados da nova atividade.
+          required: true
+          schema:
+            $ref: '#/definitions/AtividadeInput'
+      responses:
+        '201':
+          description: Atividade criada com sucesso.
+          schema:
+            $ref: '#/definitions/SucessoResposta'
+        '400':
+          description: Dados de entrada inválidos.
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Turma ou Professor (FKs) não encontrados.
+          schema:
+            $ref: '#/definitions/Error'
+
+  /atividades/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: O ID único da atividade.
+        type: integer
+
+    get:
+      tags:
+        - Atividades (CRUD Principal)
+      summary: Busca uma atividade por ID
+      description: Retorna os detalhes de uma atividade específica.
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Detalhes da atividade.
+          schema:
+            $ref: '#/definitions/AtividadeCompleta'
+        '404':
+          description: Atividade não encontrada.
+          schema:
+            $ref: '#/definitions/Error'
+
+    put:
+      tags:
+        - Atividades (CRUD Principal)
+      summary: Atualiza uma atividade existente
+      description: Atualiza os dados de uma atividade. Valida Turma e Professor se forem alterados.
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          description: ID da atividade a ser atualizada.
+        - in: body
+          name: body
+          description: Dados para atualização (parciais ou totais).
+          required: true
+          schema:
+            $ref: '#/definitions/AtividadeInput'
+      responses:
+        '200':
+          description: Atividade atualizada com sucesso.
+          schema:
+            $ref: '#/definitions/SucessoResposta'
+        '404':
+          description: Atividade ou Turma/Professor não encontrados.
+          schema:
+            $ref: '#/definitions/Error'
+
+    delete:
+      tags:
+        - Atividades (CRUD Principal)
+      summary: Deleta uma atividade
+      description: Remove uma atividade. Falhará se houver notas associadas (Integridade de DB).
+      responses:
+        '200':
+          description: Atividade deletada com sucesso.
+          schema:
+            $ref: '#/definitions/SucessoResposta'
+        '404':
+          description: Atividade não encontrada.
+          schema:
+            $ref: '#/definitions/Error'
+
+  # ====================================================
+  # ROTAS DE NOTAS (ANINHADO À ATIVIDADE)
+  # ====================================================
+  /atividades/{atividade_id}/notas:
+    parameters:
+      - name: atividade_id
+        in: path
+        required: true
+        description: O ID da atividade pai.
+        type: integer
+
+    get:
+      tags:
+        - Notas (CRUD Aninhado)
+      summary: Lista notas por atividade
+      description: Retorna todas as notas para a atividade especificada, enriquecidas com o nome do Aluno.
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Lista de notas retornada com sucesso.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NotaEnriquecida'
+        '404':
+          description: Atividade não encontrada.
+          schema:
+            $ref: '#/definitions/Error'
+
+    post:
+      tags:
+        - Notas (CRUD Aninhado)
+      summary: Lança uma nova nota
+      description: Cria uma nova nota para um aluno na atividade especificada. Valida o Aluno (via HTTP).
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: atividade_id
+          required: true
+          type: integer
+          description: ID da atividade.
+        - in: body
+          name: body
+          description: Dados da nova nota.
+          required: true
+          schema:
+            $ref: '#/definitions/NotaInput'
+      responses:
+        '201':
+          description: Nota lançada com sucesso.
+          schema:
+            $ref: '#/definitions/SucessoResposta'
+        '400':
+          description: Dados de entrada inválidos.
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Atividade ou Aluno (FK) não encontrados.
+          schema:
+            $ref: '#/definitions/Error'
+
+  # ====================================================
+  # ROTAS DE NOTAS (DIRETO POR ID DA NOTA)
+  # ====================================================
+  /notas/{nota_id}:
+    parameters:
+      - name: nota_id
+        in: path
+        required: true
+        description: O ID único do lançamento de nota.
+        type: integer
+
+    put:
+      tags:
+        - Notas (CRUD Aninhado)
+      summary: Atualiza uma nota existente
+      description: Atualiza o valor da nota e/ou o aluno associado. Valida o novo Aluno (via HTTP) se for alterado.
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: nota_id
+          required: true
+          type: integer
+          description: ID do lançamento de nota a ser atualizado.
+        - in: body
+          name: body
+          description: Dados para atualização (nota e/ou aluno_id).
+          required: true
+          schema:
+            $ref: '#/definitions/NotaInput' # Reutiliza o schema
+      responses:
+        '200':
+          description: Nota atualizada com sucesso.
+          schema:
+            $ref: '#/definitions/SucessoResposta'
+        '404':
+          description: Nota ou Aluno não encontrados.
+          schema:
+            $ref: '#/definitions/Error'
+
+    delete:
+      tags:
+        - Notas (CRUD Aninhado)
+      summary: Deleta um lançamento de nota
+      description: Remove um lançamento de nota do banco de dados.
+      responses:
+        '200':
+          description: Nota deletada com sucesso.
+          schema:
+            $ref: '#/definitions/SucessoResposta'
+        '404':
+          description: Nota não encontrada.
+          schema:
+            $ref: '#/definitions/Error'
+
+
+# Define os modelos de dados reutilizáveis (Sintaxe 2.0: 'definitions')
+definitions:
+  
+  AtividadeInput:
+    type: object
+    description: Dados necessários para criar ou atualizar uma atividade.
+    properties:
+      nome_atividade:
+        type: string
+        example: "Trabalho Final de Arquitetura"
+      descricao:
+        type: string
+        example: "Desenvolver um microserviço."
+      peso_porcento:
+        type: integer
+        example: 40
+      data_entrega:
+        type: string
+        example: "20/12/2025"
+      turma_id:
+        type: integer
+        example: 2
+      professor_id:
+        type: integer
+        example: 5
+    required:
+      - nome_atividade
+      - peso_porcento
+      - data_entrega
+      - turma_id
+      - professor_id
+
+  AtividadeSimples:
+    type: object
+    description: Representação de uma atividade (usada na listagem).
+    properties:
+      id:
+        type: integer
+        example: 1
+      nome_atividade:
+        type: string
+        example: "Trabalho Final de Arquitetura"
+      data_entrega:
+        type: string
+        example: "20/12/2025"
+      turma_id:
+        type: integer
+        example: 2
+      # Adicionar campos de enriquecimento (turma_nome, professor_nome) se a sua função listar_atividades retornar
+
+  AtividadeCompleta:
+    type: object
+    description: Representação de uma atividade (usada na busca por ID).
+    allOf:
+      - $ref: '#/definitions/AtividadeSimples'
+      - properties:
+          descricao:
+            type: string
+            example: "Desenvolver um microserviço."
+          peso_porcento:
+            type: integer
+            example: 40
+          turma_nome: # Campo enriquecido via HTTP
+            type: string
+            example: "Engenharia de Software"
+          professor_nome: # Campo enriquecido via HTTP
+            type: string
+            example: "Dr. João Silva"
+            
+  NotaInput:
+    type: object
+    description: Dados necessários para criar ou atualizar uma nota.
+    properties:
+      nota:
+        type: number
+        format: float
+        example: 8.5
+      aluno_id:
+        type: integer
+        example: 10
+    required:
+      - nota
+      - aluno_id
+
+  NotaEnriquecida:
+    type: object
+    description: Representação de um lançamento de nota enriquecido.
+    properties:
+      id:
+        type: integer
+        example: 50
+      nota:
+        type: number
+        format: float
+        example: 8.5
+      aluno:
+        type: object
+        properties:
+          id:
+            type: integer
+            example: 10
+          nome: # Campo enriquecido via HTTP
+            type: string
+            example: "Maria Antônia"
+      atividade_id:
+        type: integer
+        example: 1
+
+  SucessoResposta:
+    type: object
+    properties:
+      mensagem:
+        type: string
+        example: "Atividade criada com sucesso!"
+      id:
+        type: integer
+        example: 1
+        
+  Error:
+    type: object
+    properties:
+      erro:
+        type: string
+        example: "Mensagem de erro: Turma não encontrada."
