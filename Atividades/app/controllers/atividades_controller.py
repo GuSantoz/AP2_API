@@ -226,7 +226,7 @@ def criar_nota(atividade_id, data):
         )
         db.session.add(nova_nota)
         db.session.commit()
-        return {"mensagem": "Nota lançada com sucesso!", "id": nova_nota.id}, 201
+        return {"mensagem": "Nota lancada com sucesso!", "id": nova_nota.id}, 201
     except Exception as e:
         db.session.rollback()
         return {"erro": f"Erro interno ao salvar a nota: {str(e)}"}, 500

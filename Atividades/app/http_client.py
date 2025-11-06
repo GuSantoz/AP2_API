@@ -49,10 +49,10 @@ def get_aluno(id):
         url = f"{BASE_URL_GERENCIAMENTO}/alunos/{id}" # Assumindo a rota /alunos
         resposta = requests.get(url, timeout=3)
         
-        if resposta.status_code == 200:
+        if 200 <= resposta.status_code < 300:
             return resposta.json()
         
-        if resposta.status_code == 404:
+        if 400 <= resposta.status_code < 500:
             return None
             
         return None
