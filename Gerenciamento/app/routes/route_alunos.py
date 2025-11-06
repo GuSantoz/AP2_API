@@ -5,6 +5,7 @@ def registra_alunos(app):
     @app.route("/alunos", methods=["GET"])
     def listar_alunos():
         alunos = get_alunos()
+        #Usando Compreensão de Lista para criar as listas de maneira mais efetiva
         return jsonify([
                 {
                     "id": a.id,

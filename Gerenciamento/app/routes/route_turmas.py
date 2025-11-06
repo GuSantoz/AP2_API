@@ -20,9 +20,9 @@ def registra_turmas(app):
         data = request.get_json()
 
         if "professor_id" not in data:
-            return jsonify({"erro": "Campo 'professor_id' é obrigatório"}), 400
+            return jsonify({"erro": "Campo 'professor_id' e obrigatorio"}), 400
         if "ativo" not in data:
-            return jsonify({"erro": "Campo 'ativo' é obrigatório"}), 400
+            return jsonify({"erro": "Campo 'ativo' e obrigatorio"}), 400
 
         turma = create_turma(data)
         return jsonify({
@@ -31,7 +31,6 @@ def registra_turmas(app):
             "professor_id": turma.professor_id,
             "ativo": turma.ativo
         }), 201
-
 
     @app.route("/turmas/<int:turma_id>", methods=["GET"])
     def obter_turma_id(turma_id):
@@ -50,7 +49,7 @@ def registra_turmas(app):
         data = request.get_json()
         turma = update_turma(turma_id, data)
         if not turma:
-            return jsonify({"erro": "Turma não encontrada"}), 404
+            return jsonify({"erro": "Turma nao encontrada"}), 404
         return jsonify({
             "id": turma.id,
             "descricao": turma.descricao,
@@ -62,5 +61,5 @@ def registra_turmas(app):
     def remover_turma(turma_id):
         turma = delete_turma(turma_id)
         if not turma:
-            return jsonify({"erro": "Turma não encontrada"}), 404
+            return jsonify({"erro": "Turma nao encontrada"}), 404
         return jsonify({"mensagem": f"Turma {turma.id} removida com sucesso"}), 201

@@ -20,8 +20,7 @@ class Aluno(db.Model):
     # media_final = db.Column(db.Float, nullable=False)
     @property
     def media_final(self):
-        """Calcula e retorna a média final."""
-        # Garante que os valores não são None antes de calcular
+        # Valida se os valores não são None
         if self.nota_primeiro_semestre is None or self.nota_segundo_semestre is None:
             return 0.0
         

@@ -48,6 +48,10 @@ def registra_atividade(app):
     #====================================================
     # ROTAS DE NOTAS (CRUD Completo)
     #====================================================
+
+    # GET: /atividades/<atividade_id>/notas (Listar notas de uma atividade)
+    # POST: /atividades/<atividade_id>/notas (Criar nova nota para uma atividade)
+    
     @app.route('/atividades/<int:atividade_id>/notas', methods=['GET'])
     def get_notas_route(atividade_id):
         resultado, status_code = listar_notas(atividade_id)

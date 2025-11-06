@@ -9,8 +9,8 @@ def get_turma_by_id(turma_id):
 def create_turma(data):
     novo = Turma(
         descricao=data.get("descricao"),
-        professor_id=data["professor_id"],   # obrigatório
-        ativo=data["ativo"]                  # obrigatório
+        professor_id=data["professor_id"],
+        ativo=data["ativo"]
     )
     db.session.add(novo)
     db.session.commit()

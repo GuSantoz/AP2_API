@@ -35,7 +35,7 @@ def registra_professores(app):
         data = request.get_json()
         professor = update_professor(professor_id, data)
         if not professor:
-            return jsonify({"erro": "Professor não encontrado"}), 404
+            return jsonify({"erro": "Professor nao encontrado"}), 404
         return jsonify({
             "id": professor.id,
             "nome" : professor.nome,
@@ -48,7 +48,7 @@ def registra_professores(app):
     def obter_professor_id(professor_id):
         professor = get_professor_by_id(professor_id)
         if not professor:
-            return jsonify({"erro": "Professor não encontrado"}), 404
+            return jsonify({"erro": "Professor nao encontrado"}), 404
         return({
             "id": professor.id,
             "nome" : professor.nome,
@@ -61,5 +61,5 @@ def registra_professores(app):
     def remover_professor(professor_id):
         professor = delete_professor(professor_id)
         if not professor:
-            return jsonify({"erro": "Professor não encontrado"}), 404
+            return jsonify({"erro": "Professor nao encontrado"}), 404
         return jsonify({"mensagem": f"Professor {professor.id} removido com sucesso"}), 201

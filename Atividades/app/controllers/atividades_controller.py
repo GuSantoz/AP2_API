@@ -5,11 +5,8 @@ from requests.exceptions import Timeout, ConnectionError
 # Importa os modelos e o objeto db
 from ..models.atividade import Atividade, Notas, db
 
-# Importa as funções de comunicação HTTP (do seu app/http_client.py)
-# NOTA: Você precisará criar a função get_aluno no seu http_client.py
+# Importa as funções de comunicação HTTP do app/http_client.py
 from app.http_client import get_turma, get_professor, get_aluno
-
-
 
 # Função para serializar um objeto Atividade (usada em LISTAR e BUSCAR)
 def _serialize_atividade(atividade, turma_data=None, professor_data=None):
