@@ -1,9 +1,3 @@
-Criarei o arquivo **`README.md`** completo, cobrindo todos os pontos solicitados, para o seu projeto de Microserviços de Gerenciamento, Atividades e Reservas.
-
-Este README deve ser colocado na raiz do seu repositório AP2.
-
------
-
 # 🚀 AP2: Ecossistema de Microserviços Educacionais
 
 Este projeto implementa uma arquitetura de microserviços para gerenciar o ambiente acadêmico, dividida em três serviços independentes: **Gerenciamento** (dados mestres), **Atividades/Notas** (currículo) e **Reservas** (recursos físicos).
