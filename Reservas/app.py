@@ -3,7 +3,7 @@ import requests
 
 app = Flask(__name__)
 
-@app.route('/')
+"""@app.route('/')
 def home():
     try:
         # Tenta se comunicar com o microsserviço secundário
@@ -19,7 +19,7 @@ def home():
     except requests.exceptions.RequestException as e:
         mensagem = f"Erro de conexão com o Microsserviço Secundário: {e}"
     
-    return jsonify({"status": "ok", "mensagem_principal": "Olá do Microsserviço Principal!", "resultado_da_comunicacao": mensagem})
+    return jsonify({"status": "ok", "mensagem_principal": "Olá do Microsserviço Principal!", "resultado_da_comunicacao": mensagem})"""
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

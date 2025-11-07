@@ -1,23 +1,8 @@
 from flask import request, jsonify
+from ..controllers.atividades_controller import listar_atividades, criar_atividade, buscar_atividade_por_id, atualizar_atividade, deletar_atividade,listar_notas, criar_nota, atualizar_nota, deletar_nota
 
-# Importando TODAS as funções do controller
-from ..controllers.atividades_controller import (
-    listar_atividades, 
-    criar_atividade, 
-    buscar_atividade_por_id, 
-    atualizar_atividade, 
-    deletar_atividade,
-    listar_notas, 
-    criar_nota, 
-    atualizar_nota, 
-    deletar_nota
-)
-
-# Esta função recebe a instância do app e registra todas as rotas
 def registra_atividade(app):
-
-    # ROTAS DE ATIVIDADES (CRUD Completo)
-
+#ROTAS ATIVIDADES
     @app.route('/atividades', methods=['GET'])
     def get_atividades_route():
         resultado = listar_atividades()
@@ -45,13 +30,7 @@ def registra_atividade(app):
         resultado, status_code = deletar_atividade(id)
         return jsonify(resultado), status_code
 
-    #====================================================
-    # ROTAS DE NOTAS (CRUD Completo)
-    #====================================================
-
-    # GET: /atividades/<atividade_id>/notas (Listar notas de uma atividade)
-    # POST: /atividades/<atividade_id>/notas (Criar nova nota para uma atividade)
-    
+#ROTAS NOTAS
     @app.route('/atividades/<int:atividade_id>/notas', methods=['GET'])
     def get_notas_route(atividade_id):
         resultado, status_code = listar_notas(atividade_id)
@@ -62,15 +41,13 @@ def registra_atividade(app):
         data = request.get_json()
         resultado, status_code = criar_nota(atividade_id, data)
         return jsonify(resultado), status_code
-        
-    # PUT: /notas/<nota_id> (Atualizar nota específica)
+
     @app.route('/notas/<int:nota_id>', methods=['PUT'])
     def edit_nota_route(nota_id):
         data = request.get_json()
         resultado, status_code = atualizar_nota(nota_id, data)
         return jsonify(resultado), status_code
 
-    # DELETE: /notas/<nota_id> (Deletar nota específica)
     @app.route('/notas/<int:nota_id>', methods=['DELETE'])
     def remove_nota_route(nota_id):
         resultado, status_code = deletar_nota(nota_id)

@@ -4,22 +4,19 @@ info:
   description: Microserviço para gerenciamento de atividades (trabalhos) e notas de alunos.
   version: '1.0.0'
 
-# Assumindo que este microserviço roda na porta 5002
 host: "127.0.0.1:5002"
 basePath: "/"
 schemes:
   - http
 
 tags:
-  - name: Atividades (CRUD Principal)
+  - name: Atividades
     description: Operações de criação, leitura, atualização e exclusão de Atividades.
   - name: Notas (CRUD Aninhado)
     description: Operações de lançamento e gerenciamento de notas em Atividades.
 
+#ROTAS ATIVIDADES
 paths:
-  # ====================================================
-  # ROTAS DE ATIVIDADES
-  # ====================================================
   /atividades:
     get:
       tags:
@@ -34,7 +31,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/AtividadeSimples' # Não enriquecida para listagem
+              $ref: '#/definitions/AtividadeSimples'
     
     post:
       tags:
@@ -133,9 +130,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  # ====================================================
-  # ROTAS DE NOTAS (ANINHADO À ATIVIDADE)
-  # ====================================================
+#ROTAS NOTAS
   /atividades/{atividade_id}/notas:
     parameters:
       - name: atividade_id
@@ -196,9 +191,6 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  # ====================================================
-  # ROTAS DE NOTAS (DIRETO POR ID DA NOTA)
-  # ====================================================
   /notas/{nota_id}:
     parameters:
       - name: nota_id
@@ -225,7 +217,7 @@ paths:
           description: Dados para atualização (nota e/ou aluno_id).
           required: true
           schema:
-            $ref: '#/definitions/NotaInput' # Reutiliza o schema
+            $ref: '#/definitions/NotaInput'
       responses:
         '200':
           description: Nota atualizada com sucesso.
@@ -300,7 +292,6 @@ definitions:
       turma_id:
         type: integer
         example: 2
-      # Adicionar campos de enriquecimento (turma_nome, professor_nome) se a sua função listar_atividades retornar
 
   AtividadeCompleta:
     type: object
@@ -314,10 +305,10 @@ definitions:
           peso_porcento:
             type: integer
             example: 40
-          turma_nome: # Campo enriquecido via HTTP
+          turma_nome:
             type: string
             example: "Engenharia de Software"
-          professor_nome: # Campo enriquecido via HTTP
+          professor_nome:
             type: string
             example: "Dr. João Silva"
             
@@ -353,7 +344,7 @@ definitions:
           id:
             type: integer
             example: 10
-          nome: # Campo enriquecido via HTTP
+          nome:
             type: string
             example: "Maria Antônia"
       atividade_id:

@@ -1,6 +1,6 @@
 from ..models.reserva import Reserva, db
 import requests
-from app.http_client import get_turma
+from ..http import get_turma
 
 def listar_reservas():
     reservas = Reserva.query.all()
@@ -17,9 +17,8 @@ def listar_reservas():
     return resultado
 
 def buscar_reserva_por_id(reserva_id):
-    
     reserva = Reserva.query.get(reserva_id)
-    
+
     if not reserva:
         return {"erro": f"Reserva com ID {reserva_id} não encontrada."}, 404
 
@@ -30,28 +29,22 @@ def buscar_reserva_por_id(reserva_id):
         "num_sala": reserva.num_sala,
         "lab": reserva.lab,
         "data": reserva.data,
-        "turma_id": reserva.turma_id,
-        #"turma_nome": turma.get("nome") if turma else "Turma Desconhecida"
+        "turma_id": reserva.turma_id
     }
     return resultado, 200
 
 def listar_reserva_id(reserva_id):
     reservas = Reserva.query.all()
     resultado = []
-    
-
-
 
 def criar_reserva(data):
     turma_id = data.get('turma_id') 
-    url = f"http://localhost:5000/turmas/{turma_id}"
-    resposta = requests.get(url, timeout=3)
+    resposta = get_turma(turma_id)
 
-    #turma = get_turma(turma_id)
-    if resposta.status_code == 404:
+    if 400 <= resposta.status_code < 500:
         return {"erro": f"Turma {turma_id} não encontrada"}, 404
 
-    if resposta.status_code == 200 or resposta.status_code == 201:
+    if 200 <= resposta.status_code < 300: 
         nova_reserva = Reserva(
             num_sala=data["num_sala"],
             lab=data["lab"],
@@ -75,7 +68,6 @@ def atualizar_reserva(id, data):
 
     db.session.commit()
     return {"mensagem": "Reserva atualizada com sucesso"}, 200
-
 
 def deletar_reserva(id):
     reserva = Reserva.query.get(id)

@@ -4,7 +4,6 @@ info:
   description: Microserviço para gerenciamento de reservas de salas.
   version: '1.0.0'
 
-# Define o servidor base (Sintaxe 2.0)
 host: "127.0.0.1:5001"
 basePath: "/"
 schemes:
@@ -15,29 +14,29 @@ tags:
   - name: Reservas
     description: Operações de CRUD para Reservas
 
-# Define os caminhos (endpoints) da API
+# Define os endpoints
 paths:
   /reservas:
     get:
       tags:
         - Reservas
       summary: Lista todas as reservas
-      description: Retorna uma lista de todas as reservas cadastradas, sem enriquecimento.
+      description: Retorna uma lista de todas as reservas cadastradas.
       produces: # Define o tipo de resposta
         - application/json
       responses:
         '200':
           description: Lista de reservas retornada com sucesso.
-          schema: # Sintaxe 2.0 para schema de resposta
+          schema: 
             type: array
             items:
               $ref: '#/definitions/ReservaSimples'
-    
+
     post:
       tags:
         - Reservas
       summary: Cria uma nova reserva
-      description: Cria uma nova reserva após validar se a Turma (via turma_id) existe no microserviço de Gerenciamento.
+      description: Cria uma nova reserva após validar se a Turma existe no microserviço de Gerenciamento.
       consumes: # Define o tipo de input (JSON)
         - application/json
       parameters:
@@ -80,7 +79,7 @@ paths:
       tags:
         - Reservas
       summary: Busca uma reserva por ID
-      description: Retorna os detalhes de uma reserva específica, enriquecida com o nome da turma.
+      description: Retorna os detalhes de uma reserva específica, com o nome da turma.
       produces:
         - application/json
       responses:
