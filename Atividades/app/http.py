@@ -1,7 +1,7 @@
 import requests
 from requests.exceptions import Timeout, ConnectionError
 
-BASE_URL_GERENCIAMENTO = "http://127.0.0.1:5000/" 
+BASE_URL_GERENCIAMENTO = "http://gerenciamento:5000/" 
 
 def get_turma(id):
     url = f"{BASE_URL_GERENCIAMENTO}turmas/{id}" 

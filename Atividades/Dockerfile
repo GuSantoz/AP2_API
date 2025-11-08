@@ -1,5 +1,5 @@
 # Usa uma imagem base Python
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 # Define o diretório de trabalho dentro do container
 WORKDIR /app
@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app.py .
 
 # Expõe a porta que a aplicação vai rodar
-EXPOSE 5001
+EXPOSE 5002
 
 # Comando para rodar a aplicação quando o container iniciar
-CMD ["python", "app.py"]
+CMD ["python", "run.py"]
