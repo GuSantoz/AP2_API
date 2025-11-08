@@ -12,7 +12,7 @@ schemes:
 tags:
   - name: Atividades
     description: Operações de criação, leitura, atualização e exclusão de Atividades.
-  - name: Notas (CRUD Aninhado)
+  - name: Notas
     description: Operações de lançamento e gerenciamento de notas em Atividades.
 
 #ROTAS ATIVIDADES
@@ -20,7 +20,7 @@ paths:
   /atividades:
     get:
       tags:
-        - Atividades (CRUD Principal)
+        - Atividades
       summary: Lista todas as atividades
       description: Retorna uma lista de todas as atividades, enriquecidas com dados da Turma e Professor.
       produces:
@@ -35,7 +35,7 @@ paths:
     
     post:
       tags:
-        - Atividades (CRUD Principal)
+        - Atividades
       summary: Cria uma nova atividade
       description: Cria uma nova atividade após validar Turma e Professor (via HTTP).
       consumes:
@@ -71,7 +71,7 @@ paths:
 
     get:
       tags:
-        - Atividades (CRUD Principal)
+        - Atividades 
       summary: Busca uma atividade por ID
       description: Retorna os detalhes de uma atividade específica.
       produces:
@@ -88,7 +88,7 @@ paths:
 
     put:
       tags:
-        - Atividades (CRUD Principal)
+        - Atividades 
       summary: Atualiza uma atividade existente
       description: Atualiza os dados de uma atividade. Valida Turma e Professor se forem alterados.
       consumes:
@@ -117,7 +117,7 @@ paths:
 
     delete:
       tags:
-        - Atividades (CRUD Principal)
+        - Atividades
       summary: Deleta uma atividade
       description: Remove uma atividade. Falhará se houver notas associadas (Integridade de DB).
       responses:
@@ -141,7 +141,7 @@ paths:
 
     get:
       tags:
-        - Notas (CRUD Aninhado)
+        - Notas
       summary: Lista notas por atividade
       description: Retorna todas as notas para a atividade especificada, enriquecidas com o nome do Aluno.
       produces:
@@ -160,7 +160,7 @@ paths:
 
     post:
       tags:
-        - Notas (CRUD Aninhado)
+        - Notas 
       summary: Lança uma nova nota
       description: Cria uma nova nota para um aluno na atividade especificada. Valida o Aluno (via HTTP).
       consumes:
@@ -201,7 +201,7 @@ paths:
 
     put:
       tags:
-        - Notas (CRUD Aninhado)
+        - Notas 
       summary: Atualiza uma nota existente
       description: Atualiza o valor da nota e/ou o aluno associado. Valida o novo Aluno (via HTTP) se for alterado.
       consumes:
@@ -230,7 +230,7 @@ paths:
 
     delete:
       tags:
-        - Notas (CRUD Aninhado)
+        - Notas 
       summary: Deleta um lançamento de nota
       description: Remove um lançamento de nota do banco de dados.
       responses:
