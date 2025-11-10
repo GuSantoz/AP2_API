@@ -145,3 +145,6 @@ Para garantir a execução de todo o ecossistema de forma isolada e simplificada
     ```bash
     docker compose down
     ```
+
+**DESENVOLVEDORES RESPONSAVEIS**
+Alex Manoel dos Santos Junior, Ana Laura Brandão e Gustavo Bomfim dos Santos
