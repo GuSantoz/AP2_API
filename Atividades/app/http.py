@@ -22,7 +22,7 @@ def get_turma(id):
         return None
 
 def get_professor(id):
-    url = f"{BASE_URL_GERENCIAMENTO}/professores/{id}"
+    url = f"{BASE_URL_GERENCIAMENTO}professores/{id}"
     try:
         resposta = requests.get(url, timeout=3)
 
@@ -40,7 +40,7 @@ def get_professor(id):
 
 def get_aluno(id):
     try:
-        url = f"{BASE_URL_GERENCIAMENTO}/alunos/{id}"
+        url = f"{BASE_URL_GERENCIAMENTO}alunos/{id}"
         resposta = requests.get(url, timeout=3)
 
         if 200 <= resposta.status_code < 300:
